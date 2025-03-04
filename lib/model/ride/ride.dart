@@ -1,4 +1,5 @@
 import 'package:w4_blabla/model/ride/locations.dart';
+import 'package:w4_blabla/service/rides_service.dart';
 
 import '../../utils/date_time_util.dart';
 import '../user/user.dart';
@@ -29,6 +30,8 @@ class Ride {
 
   final List<User> passengers = [];
 
+  final RidesFilter ridesFilter;
+
   Ride({
     required this.departureLocation,
     required this.departureDate,
@@ -37,6 +40,7 @@ class Ride {
     required this.driver,
     required this.availableSeats,
     required this.pricePerSeat,
+    required this.ridesFilter
   });
 
   void addPassenger(User passenger) {
