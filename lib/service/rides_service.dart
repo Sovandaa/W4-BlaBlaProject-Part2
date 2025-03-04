@@ -41,14 +41,31 @@ class RidesService {
   ///
   ///  Return the relevant rides , given the passenger preferences
   ///
-  List<Ride> getRidesFor(RidePreference preferences, RidesFilter? filter) {
-    return repository
+  List<Ride> getRidesFor(RidePreference preferences, RidesFilter? filter, RideSortType? sortType) {
+    
+    List<Ride> matchingRides = repository
         .getRides(preferences, filter)
         .where((ride) =>
             ride.departureLocation == preferences.departure &&
             ride.arrivalLocation == preferences.arrival &&
-            ride.ridesFilter.acceptPets == filter?.acceptPets)
+            (filter == null || ride.ridesFilter.acceptPets == filter.acceptPets))
         .toList();
+
+    // handle storing type if it's provided
+    if (sortType != null) {
+      switch (sortType) {
+        case RideSortType.earliestDeparture:
+          matchingRides
+              .sort((a, b) => a.departureDate.compareTo(b.departureDate));
+          break;
+        case RideSortType.lowestPrice:
+          matchingRides
+              .sort((a, b) => a.pricePerSeat.compareTo(b.pricePerSeat));
+          break;
+      }
+    }
+
+    return matchingRides;
   }
 
   // static List<Ride> availableRides = fakeRides;
@@ -57,7 +74,6 @@ class RidesService {
   ///  Return the relevant rides, given the passenger preferences
   ///
   // static List<Ride> getRidesFor(RidePreference preferences) {
-
   //   // For now, just a test
   //   return availableRides.where( (ride) => ride.departureLocation == preferences.departure && ride.arrivalLocation == preferences.arrival).toList();
   // }
@@ -68,3 +84,5 @@ class RidesFilter {
 
   RidesFilter({required this.acceptPets});
 }
+
+enum RideSortType { earliestDeparture, lowestPrice }

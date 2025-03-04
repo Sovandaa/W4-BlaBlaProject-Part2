@@ -22,12 +22,12 @@ class RidesScreen extends StatefulWidget {
 
 class _RidesScreenState extends State<RidesScreen> {
 
-  RidePreference currentPreference = RidePrefService.instance
-      .currentPreference!; // TODO 1 :  We should get it from the service
-  
-  RidesFilter filter = RidesFilter(acceptPets: false);
+  RidePreference currentPreference = RidePrefService.instance.currentPreference!; // TODO 1 :  We should get it from the service
 
-  List<Ride> get matchingRides => RidesService.instance.getRidesFor(currentPreference, filter);
+  RidesFilter filter = RidesFilter(acceptPets: false);
+  RideSortType selectedSort = RideSortType.earliestDeparture;
+
+  List<Ride> get matchingRides => RidesService.instance.getRidesFor(currentPreference,filter,selectedSort);
 
   void onBackPressed() {
     Navigator.of(context).pop(); //  Back to the previous view
@@ -45,6 +45,7 @@ class _RidesScreenState extends State<RidesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print(matchingRides.length); 
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.only(
