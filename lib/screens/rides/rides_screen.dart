@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:w4_blabla/screens/rides/widgets/ride_pref_bar.dart';
+import 'package:w4_blabla/screens/rides/widgets/ride_pref_modal.dart';
 import 'package:w4_blabla/service/ride_prefs_service.dart';
+import 'package:w4_blabla/utils/animations_util.dart';
 
 import '../../model/ride/ride.dart';
 import '../../model/ride_pref/ride_pref.dart';
@@ -21,13 +23,14 @@ class RidesScreen extends StatefulWidget {
 }
 
 class _RidesScreenState extends State<RidesScreen> {
-
-  RidePreference currentPreference = RidePrefService.instance.currentPreference!; // TODO 1 :  We should get it from the service
+  RidePreference currentPreference = RidePrefService.instance
+      .currentPreference!; // TODO 1 :  We should get it from the service
 
   RidesFilter filter = RidesFilter(acceptPets: false);
   RideSortType selectedSort = RideSortType.earliestDeparture;
 
-  List<Ride> get matchingRides => RidesService.instance.getRidesFor(currentPreference,filter,selectedSort);
+  List<Ride> get matchingRides => RidesService.instance
+      .getRidesFor(currentPreference, filter, selectedSort);
 
   void onBackPressed() {
     Navigator.of(context).pop(); //  Back to the previous view
@@ -35,17 +38,24 @@ class _RidesScreenState extends State<RidesScreen> {
 
   void onPreferencePressed() async {
     // TODO  6 : we should push the modal with the current pref
+    RidePreference newRidePref = await Navigator.of(context).push(
+        AnimationUtils.createBottomToTopRoute(
+            RidePrefModal(initRidePref: currentPreference)));
 
     // TODO 9 :  After pop, we should get the new current pref from the modal
 
     // TODO 10 :  Then we should update the service current pref,   and update the view
+    RidePrefService.instance.setCurrentPreference(newRidePref);
+    setState(() {
+      currentPreference = newRidePref;
+    });
   }
 
   void onFilterPressed() {}
 
   @override
   Widget build(BuildContext context) {
-    // print(matchingRides.length); 
+    // print(matchingRides.length);
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.only(

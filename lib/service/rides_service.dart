@@ -42,16 +42,17 @@ class RidesService {
   ///  Return the relevant rides , given the passenger preferences
   ///
   List<Ride> getRidesFor(RidePreference preferences, RidesFilter? filter, RideSortType? sortType) {
-    
-    List<Ride> matchingRides = repository
-        .getRides(preferences, filter)
-        .where((ride) =>
-            ride.departureLocation == preferences.departure &&
-            ride.arrivalLocation == preferences.arrival &&
-            (filter == null || ride.ridesFilter.acceptPets == filter.acceptPets))
-        .toList();
 
-    // handle storing type if it's provided
+    List<Ride> matchingRides = repository.getRides(preferences, filter)
+    .where((ride) =>
+        ride.departureLocation == preferences.departure &&
+        ride.arrivalLocation == preferences.arrival &&
+        (filter == null ||ride.ridesFilter.acceptPets == filter.acceptPets)
+        )
+    .toList();
+    //print(matchingRides.length);
+
+    //handle storing type if it's provided
     if (sortType != null) {
       switch (sortType) {
         case RideSortType.earliestDeparture:
